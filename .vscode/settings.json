@@ -1,0 +1,4 @@
+{
+    "chat.autopilot.enabled": true,
+    "terminal.integrated.experimental.aiProfileGrouping": true
+}
