@@ -23,14 +23,14 @@ DELETE FROM habitacion WHERE IDHabitacion > 0;
 
 -- Insertar habitaciones de ejemplo
 INSERT INTO habitacion (IDHabitacion, NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado) VALUES 
-(1, 'Habitación Estándar', NULL, 'Habitación cómoda con cama doble, baño privado, TV y aire acondicionado.', 100000, 1),
-(2, 'Habitación Deluxe', NULL, 'Habitación espaciosa con cama king, jacuzzi, mini bar y balcón con vista al mar.', 200000, 1),
-(3, 'Suite Familiar', NULL, 'Gran habitación familiar con dos camas queen, sala de estar y cocina básica.', 350000, 1),
-(4, 'Habitación Individual', NULL, 'Habitación económica con cama individual, baño privado y TV.', 50000, 1),
-(5, 'Suite Presidencial', NULL, 'Lujo extremo con cama king, jacuzzi privado, sala de conferencias y terraza.', 500000, 1),
-(6, 'Habitación Triple', NULL, 'Habitación espaciosa con tres cama individuales y espacio adicional.', 150000, 1),
-(7, 'Cabaña Jardín', NULL, 'Acogedora cabaña rodeada de vegetación con terraza privada.', 180000, 1),
-(8, 'Habitación Piscina', NULL, 'Habitación moderna con vista directa a la piscina y balcón.', 170000, 1);
+(1, 'Habitación Estándar', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop', 'Habitación cómoda con cama doble, baño privado, TV y aire acondicionado.', 100000, 1),
+(2, 'Habitación Deluxe', 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop', 'Habitación espaciosa con cama king, jacuzzi, mini bar y balcón con vista al mar.', 200000, 1),
+(3, 'Suite Familiar', 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=300&fit=crop', 'Gran habitación familiar con dos camas queen, sala de estar y cocina básica.', 350000, 1),
+(4, 'Habitación Individual', 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=300&fit=crop', 'Habitación económica con cama individual, baño privado y TV.', 50000, 1),
+(5, 'Suite Presidencial', 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop', 'Lujo extremo con cama king, jacuzzi privado, sala de conferencias y terraza.', 500000, 1),
+(6, 'Habitación Triple', 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=300&fit=crop', 'Habitación espaciosa con tres cama individuales y espacio adicional.', 150000, 1),
+(7, 'Cabaña Jardín', 'https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=400&h=300&fit=crop', 'Acogedora cabaña rodeada de vegetación con terraza privada.', 180000, 1),
+(8, 'Habitación Piscina', 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400&h=300&fit=crop', 'Habitación moderna con vista directa a la piscina y balcón.', 170000, 1);
 
 -- =============================================================================
 -- TABLA CLIENTES

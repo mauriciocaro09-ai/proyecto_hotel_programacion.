@@ -48,4 +48,23 @@ app.get('/', (req, res) => {
     });
 });
 
+// Ruta temporal para ver estructura de tablas
+const db = require('./database/connection');
+app.get('/api/debug/estructura', async (req, res) => {
+    try {
+        const [habitaciones] = await db.query('DESCRIBE habitacion');
+        const [clientes] = await db.query('DESCRIBE cliente');
+        const [reservas] = await db.query('DESCRIBE reserva');
+        const [servicios] = await db.query('DESCRIBE servicio');
+        res.json({
+            habitacion: habitaciones,
+            cliente: clientes,
+            reserva: reservas,
+            servicio: servicios
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = app;

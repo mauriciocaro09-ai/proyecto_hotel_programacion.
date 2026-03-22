@@ -26,11 +26,11 @@ const getById = async (req, res) => {
 
 // CREATE cliente POST
 const create = async (req, res) => { 
-    const {  Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento } = req.body;
+    const { NombreCliente, EmailCliente, TelefonoCliente } = req.body;
     try {
         await db.query(
-            "INSERT INTO cliente (Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento]
+            "INSERT INTO cliente (NombreCliente, EmailCliente, TelefonoCliente) VALUES (?, ?, ?)",
+            [NombreCliente, EmailCliente, TelefonoCliente]
         )
         res.status(201).json({ message: "Cliente creado exitosamente"});
     } catch (error) {
@@ -41,11 +41,11 @@ const create = async (req, res) => {
 // UPDATE cliente PUT
 const update = async (req, res) => {
     const { id } = req.params;
-    const { Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento } = req.body; 
+    const { NombreCliente, EmailCliente, TelefonoCliente } = req.body; 
     try {
         await db.query(
-            "UPDATE cliente SET Nombre = ?, Apellido = ?, CorreoElectronico = ?, Telefono = ?, Direccion = ?, NumeroDocumento = ?, TipoDocumento = ? WHERE IDCliente = ?",
-            [Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento, id]
+            "UPDATE cliente SET NombreCliente = ?, EmailCliente = ?, TelefonoCliente = ? WHERE IDCliente = ?",
+            [NombreCliente, EmailCliente, TelefonoCliente, id]
         )
         res.json({ message: "Cliente actualizado exitosamente" })
     } catch (error) {
