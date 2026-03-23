@@ -11,7 +11,6 @@ async function main() {
         await connection.query('DELETE FROM roles WHERE IDRol > 0');
         await connection.query(`INSERT INTO roles (IDRol, Nombre, Estado, IsActive) VALUES
             (1, 'Administrador', 'activo', 1),
-            (2, 'Recepcionista', 'activo', 1),
             (3, 'Cliente', 'activo', 1)`);
         console.log('✓ Roles insertados\n');
 
