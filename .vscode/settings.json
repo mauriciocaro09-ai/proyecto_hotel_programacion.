@@ -1,4 +1,5 @@
 {
     "chat.autopilot.enabled": true,
-    "terminal.integrated.experimental.aiProfileGrouping": true
+    "terminal.integrated.experimental.aiProfileGrouping": true,
+    "liveServer.settings.port": 5501
 }

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const clienteController = require("../controllers/Clientecontroller");
+const clienteController = require("../controllers/clientes.controller");
 
 // Rutas para clientes
 router.get("/", clienteController.list);

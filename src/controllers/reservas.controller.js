@@ -38,8 +38,8 @@ const create = async (req, res) => {
             IDReserva: nuevaReserva.insertId
         });
     } catch (error) {
-        console.error('Error al crear reserva:', error);
-        res.status(500).json({ error: "Error al crear la reserva: " + error.message });
+        console.error("Error al crear reserva:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
     }
 };
 
@@ -57,10 +57,13 @@ const update = async (req, res) => {
 // Eliminar reserva
 const remove = async (req, res) => {
     const { id } = req.params;
+    console.log('Controlador: Eliminando reserva con ID:', id);
     try {
-        await reservaModel.remove(id);
+        const result = await reservaModel.delete(id);
+        console.log('Controlador: Reserva eliminada exitosamente:', result);
         res.json({ message: "Reserva eliminada exitosamente" });
     } catch (error) {
+        console.error("Controlador: Error al eliminar reserva:", error);
         res.status(500).json({ error: "Error al eliminar la reserva" });
     }
 };

@@ -1,28 +1,67 @@
-const serviciosController = require('../controllers/servicios.controller');
+const ServiciosModel = require('../models/servicios');
 
 // Función para listar todos los servicios
 const listServicios = async () => {
-    return await serviciosController.list();
+    try {
+        const servicios = await ServiciosModel.findAll();
+        return servicios;
+    } catch (error) {
+        throw new Error("Error al obtener los servicios");
+    }
 };
 
 // Función para obtener un servicio por ID
 const getServicioById = async (id) => {
-    return await serviciosController.getById(id);
+    try {
+        const servicio = await ServiciosModel.findById(id);
+        if (!servicio) {
+            throw new Error("Servicio no encontrado");
+        }
+        return servicio;
+    } catch (error) {
+        throw new Error("Error al obtener el servicio: " + error.message);
+    }
 };
 
 // Función para crear un nuevo servicio
 const createServicio = async (data) => {
-    return await serviciosController.create(data);
+    try {
+        // Validar campos requeridos
+        if (!data.NombreServicio || !data.Costo) {
+            throw new Error("Nombre y costo son requeridos");
+        }
+
+        const result = await ServiciosModel.create(data);
+        return result;
+    } catch (error) {
+        throw new Error("Error al crear el servicio: " + error.message);
+    }
 };
 
 // Función para actualizar un servicio
 const updateServicio = async (id, data) => {
-    return await serviciosController.update(id, data);
+    try {
+        const result = await ServiciosModel.update(id, data);
+        if (!result.affectedRows || result.affectedRows === 0) {
+            throw new Error("Servicio no encontrado");
+        }
+        return result;
+    } catch (error) {
+        throw new Error("Error al actualizar el servicio: " + error.message);
+    }
 };
 
 // Función para eliminar un servicio
 const removeServicio = async (id) => {
-    return await serviciosController.remove(id);
+    try {
+        const result = await ServiciosModel.delete(id);
+        if (!result.affectedRows || result.affectedRows === 0) {
+            throw new Error("Servicio no encontrado");
+        }
+        return result;
+    } catch (error) {
+        throw new Error("Error al eliminar el servicio: " + error.message);
+    }
 };
 
 module.exports = {

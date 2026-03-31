@@ -9,35 +9,35 @@ const ClienteModel = {
         return rows;
     },
 
-    // Obtener cliente por ID
-    findById: async (id) => {
-        const [rows] = await db.query("SELECT * FROM cliente WHERE IDCliente = ?", [id]);
+    // Obtener cliente por NroDocumento
+    findById: async (nroDocumento) => {
+        const [rows] = await db.query("SELECT * FROM cliente WHERE NroDocumento = ?", [nroDocumento]);
         return rows[0];
     },
 
     // Crear nuevo cliente
     create: async (clienteData) => {
-        const { Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento } = clienteData;
+        const { NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol } = clienteData;
         const [result] = await db.query(
-            "INSERT INTO cliente (Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento]
+            "INSERT INTO cliente (NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [NroDocumento, Nombre, Apellido, Direccion, Email, Telefono, Estado || 1, IDRol || 1]
         );
         return result;
     },
 
     // Actualizar cliente
-    update: async (id, clienteData) => {
-        const { Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento } = clienteData;
+    update: async (nroDocumento, clienteData) => {
+        const { Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol } = clienteData;
         const [result] = await db.query(
-            "UPDATE cliente SET Nombre = ?, Apellido = ?, CorreoElectronico = ?, Telefono = ?, Direccion = ?, NumeroDocumento = ?, TipoDocumento = ? WHERE IDCliente = ?",
-            [Nombre, Apellido, CorreoElectronico, Telefono, Direccion, NumeroDocumento, TipoDocumento, id]
+            "UPDATE cliente SET Nombre = ?, Apellido = ?, Direccion = ?, Email = ?, Telefono = ?, Estado = ?, IDRol = ? WHERE NroDocumento = ?",
+            [Nombre, Apellido, Direccion, Email, Telefono, Estado, IDRol, nroDocumento]
         );
         return result;
     },
 
     // Eliminar cliente
-    delete: async (id) => {
-        const [result] = await db.query("DELETE FROM cliente WHERE IDCliente = ?", [id]);
+    delete: async (nroDocumento) => {
+        const [result] = await db.query("DELETE FROM cliente WHERE NroDocumento = ?", [nroDocumento]);
         return result;
     }
 };

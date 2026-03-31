@@ -27,6 +27,12 @@ const getById = async (req, res) => {
 // CREATE habitacion POST
 const create = async (req, res) => { 
     const {  NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado } = req.body;
+    
+    // Validar campos requeridos
+    if (!NombreHabitacion || !Costo) {
+        return res.status(400).json({ error: "Nombre y costo son requeridos" });
+    }
+    
     try {
         await db.query(
             "INSERT INTO habitacion (NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado) VALUES (?, ?, ?, ?, ?)",
@@ -42,11 +48,22 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     const { id } = req.params;
     const { NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado } = req.body; 
+    
+    // Validar campos requeridos
+    if (!NombreHabitacion || !Costo) {
+        return res.status(400).json({ error: "Nombre y costo son requeridos" });
+    }
+    
     try {
+        const [existing] = await db.query("SELECT * FROM habitacion WHERE IDHabitacion = ?", [id]);
+        if (existing.length === 0) {
+            return res.status(404).json({ error: "Habitación no encontrada" });
+        }
+
         await db.query(
             "UPDATE habitacion SET NombreHabitacion = ?, ImagenHabitacion = ?, Descripcion = ?, Costo = ?, Estado = ? WHERE IDHabitacion = ?",
             [NombreHabitacion, ImagenHabitacion, Descripcion, Costo, Estado, id]
-        )
+        );
         res.json({ message: "Habitación actualizada exitosamente" })
     } catch (error) {
         res.status(500).json({ error: "Error al actualizar la habitación" })
@@ -57,6 +74,11 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
     const { id } = req.params;
     try {
+        const [existing] = await db.query("SELECT * FROM habitacion WHERE IDHabitacion = ?", [id]);
+        if (existing.length === 0) {
+            return res.status(404).json({ error: "Habitación no encontrada" });
+        }
+
         await db.query("DELETE FROM habitacion WHERE IDHabitacion = ?", [id])
         res.json({ message: "Habitación eliminada exitosamente" })
     } catch (error) {

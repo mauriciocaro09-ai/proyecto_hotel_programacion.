@@ -3,7 +3,7 @@ const db = require("../database/connection");
 // Get all services / list
 const list = async (req, res) => {
     try {
-        const [servicios] = await db.query("SELECT * FROM servicios")
+        const [servicios] = await db.query("SELECT * FROM servicio")
         res.json(servicios)
     } catch (error) {
         res.status(500).json({ error: "Error al obtener los servicios" })
@@ -14,7 +14,7 @@ const list = async (req, res) => {
 const getById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await db.query("SELECT * FROM servicios WHERE IDServicio = ?", [id]);
+        const [rows] = await db.query("SELECT * FROM servicio WHERE IDServicio = ?", [id]);
         if (rows.length === 0) {
             return res.status(404).json({ error: "Servicio no encontrado" });
         }
@@ -29,7 +29,7 @@ const create = async (req, res) => {
     const { NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado } = req.body;
     try {
         await db.query(
-            "INSERT INTO servicios (NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO servicio (NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado) VALUES (?, ?, ?, ?, ?, ?)",
             [NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado]
         )
         res.status(201).json({ message: "Servicio creado exitosamente"});
@@ -44,7 +44,7 @@ const update = async (req, res) => {
     const { NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado } = req.body; 
     try {
         await db.query(
-            "UPDATE servicios SET NombreServicio = ?, Descripcion = ?, Duracion = ?, CantidadMaximaPersonas = ?, Costo = ?, Estado = ? WHERE IDServicio = ?",
+            "UPDATE servicio SET NombreServicio = ?, Descripcion = ?, Duracion = ?, CantidadMaximaPersonas = ?, Costo = ?, Estado = ? WHERE IDServicio = ?",
             [NombreServicio, Descripcion, Duracion, CantidadMaximaPersonas, Costo, Estado, id]
         )
         res.json({ message: "Servicio actualizado exitosamente" })
@@ -57,7 +57,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
     const { id } = req.params;
     try {
-        await db.query("DELETE FROM servicios WHERE IDServicio = ?", [id])
+        await db.query("DELETE FROM servicio WHERE IDServicio = ?", [id])
         res.json({ message: "Servicio eliminado exitosamente" })
     } catch (error) {
         res.status(500).json({ error: "Error al eliminar el servicio" })

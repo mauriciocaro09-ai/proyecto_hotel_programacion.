@@ -30,8 +30,8 @@ const ClienteService = {
     createCliente: async (clienteData) => {
         try {
             // Validar que los datos requeridos estén presentes
-            if (!clienteData.Nombre || !clienteData.Apellido || !clienteData.CorreoElectronico) {
-                throw new Error("Nombre, Apellido y Correo Electrónico son requeridos");
+            if (!clienteData.Nombre || !clienteData.Apellido || !clienteData.Email) {
+                throw new Error("Nombre, Apellido y Email son requeridos");
             }
             
             const result = await ClienteModel.create(clienteData);
