@@ -21,6 +21,15 @@ router.get('/estados', reservasController.getEstadosReserva);
 // GET /api/reservas/:id - Obtener una reserva por ID
 router.get('/:id', reservasController.getById);
 
+// GET /api/reservas/:id/servicios - Listar servicios activos de una reserva
+router.get('/:id/servicios', reservasController.getServices);
+
+// POST /api/reservas/:id/servicios - Agregar servicio a una reserva
+router.post('/:id/servicios', reservasController.addService);
+
+// DELETE /api/reservas/:id/servicios/:idDetalleServicio - Quitar servicio de una reserva
+router.delete('/:id/servicios/:idDetalleServicio', reservasController.removeService);
+
 // POST /api/reservas - Crear una nueva reserva
 router.post('/', reservasController.create);
 

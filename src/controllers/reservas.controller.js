@@ -44,6 +44,29 @@ const isValidDate = (value) => {
     return !Number.isNaN(parsed.getTime());
 };
 
+const normalizeReservaServicioData = (data = {}) => ({
+    IDServicio: data.IDServicio ?? data.idServicio ?? data.servicioId ?? null,
+    Cantidad: data.Cantidad ?? data.cantidad ?? 1,
+    Precio: data.Precio ?? data.precio ?? null,
+    Estado: data.Estado ?? 1
+});
+
+const validateReservaServicioPayload = (data) => {
+    if (!Number.isInteger(Number(data.IDServicio)) || Number(data.IDServicio) <= 0) {
+        return { valid: false, message: 'IDServicio debe ser un número entero positivo' };
+    }
+
+    if (!Number.isInteger(Number(data.Cantidad)) || Number(data.Cantidad) <= 0) {
+        return { valid: false, message: 'Cantidad debe ser un número entero positivo' };
+    }
+
+    if (data.Precio !== null && data.Precio !== undefined && Number(data.Precio) < 0) {
+        return { valid: false, message: 'Precio no puede ser negativo' };
+    }
+
+    return { valid: true };
+};
+
 const validateReservationPayload = (data) => {
     const missingFields = getMissingFields(data || {});
 
@@ -215,6 +238,134 @@ const remove = async (req, res) => {
     }
 };
 
+const getServices = async (req, res) => {
+    const idReserva = parsePositiveId(req.params.id);
+    const estadoQuery = req.query.estado;
+
+    if (!idReserva) {
+        return res.status(400).json({ error: 'ID de reserva inválido' });
+    }
+
+    let estadoFiltro = 1;
+
+    if (estadoQuery !== undefined) {
+        if (estadoQuery === 'all') {
+            estadoFiltro = null;
+        } else if (estadoQuery === '0' || estadoQuery === '1') {
+            estadoFiltro = Number(estadoQuery);
+        } else {
+            return res.status(400).json({ error: 'Parámetro estado inválido. Usa 0, 1 o all' });
+        }
+    }
+
+    try {
+        const servicios = await reservaModel.getServicesByReserva(idReserva, estadoFiltro);
+        res.json(servicios);
+    } catch (error) {
+        console.error('Error al listar servicios de la reserva:', error);
+
+        if (error.code === 'RESERVA_NOT_FOUND') {
+            return res.status(404).json({ error: 'Reserva no encontrada' });
+        }
+
+        res.status(500).json({ error: 'Error al obtener servicios de la reserva' });
+    }
+};
+
+const addService = async (req, res) => {
+    const idReserva = parsePositiveId(req.params.id);
+
+    if (!idReserva) {
+        return res.status(400).json({ error: 'ID de reserva inválido' });
+    }
+
+    try {
+        const payload = normalizeReservaServicioData(req.body);
+        const validation = validateReservaServicioPayload(payload);
+
+        if (!validation.valid) {
+            return res.status(400).json({ error: validation.message });
+        }
+
+        const result = await reservaModel.addServiceToReserva(idReserva, {
+            IDServicio: Number(payload.IDServicio),
+            Cantidad: Number(payload.Cantidad),
+            Precio: payload.Precio !== null && payload.Precio !== undefined ? Number(payload.Precio) : null,
+            Estado: Number(payload.Estado) === 0 ? 0 : 1
+        });
+
+        const wasUpdated = result.operation && result.operation.type === 'updated';
+
+        res.status(201).json({
+            message: wasUpdated
+                ? 'Servicio existente actualizado en la reserva (cantidad acumulada)'
+                : 'Servicio agregado a la reserva exitosamente',
+            operation: result.operation,
+            IDDetalleReservaServicio: result.operation?.id,
+            reserva: result.reservaActualizada
+        });
+    } catch (error) {
+        console.error('Error al agregar servicio a la reserva:', error);
+
+        if (error.code === 'RESERVA_NOT_FOUND') {
+            return res.status(404).json({ error: 'Reserva no encontrada' });
+        }
+
+        if (error.code === 'SERVICIO_NOT_FOUND') {
+            return res.status(404).json({ error: 'Servicio no encontrado' });
+        }
+
+        if (error.code === 'SERVICIO_INACTIVO') {
+            return res.status(400).json({ error: 'El servicio seleccionado no está activo' });
+        }
+
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            return res.status(400).json({ error: 'Relación inválida entre reserva y servicio' });
+        }
+
+        res.status(500).json({ error: 'Error al agregar servicio a la reserva' });
+    }
+};
+
+const removeService = async (req, res) => {
+    const idReserva = parsePositiveId(req.params.id);
+    const idDetalleServicio = parsePositiveId(req.params.idDetalleServicio);
+
+    if (!idReserva) {
+        return res.status(400).json({ error: 'ID de reserva inválido' });
+    }
+
+    if (!idDetalleServicio) {
+        return res.status(400).json({ error: 'ID de detalle de servicio inválido' });
+    }
+
+    try {
+        const result = await reservaModel.removeServiceFromReserva(idReserva, idDetalleServicio);
+
+        res.json({
+            message: 'Servicio quitado de la reserva exitosamente',
+            IDDetalleReservaServicio: result.detalleDesactivadoId,
+            reserva: result.reservaActualizada
+        });
+    } catch (error) {
+        console.error('Error al quitar servicio de la reserva:', error);
+
+        if (error.code === 'RESERVA_NOT_FOUND') {
+            return res.status(404).json({ error: 'Reserva no encontrada' });
+        }
+
+        if (error.code === 'DETALLE_NOT_FOUND') {
+            return res.status(404).json({ error: 'Detalle de servicio no encontrado para esta reserva' });
+        }
+
+        if (error.code === 'DETALLE_ALREADY_INACTIVE') {
+            return res.status(400).json({ error: 'El detalle de servicio ya está inactivo' });
+        }
+
+        res.status(500).json({ error: 'Error al quitar servicio de la reserva' });
+    }
+};
+
 module.exports = {
     list,
     getByCliente,
@@ -222,5 +373,8 @@ module.exports = {
     getById,
     create,
     update,
-    remove
+    remove,
+    getServices,
+    addService,
+    removeService
 };
