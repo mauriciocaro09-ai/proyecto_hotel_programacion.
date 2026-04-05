@@ -7,9 +7,10 @@ const db = require('../database/connection');
 // Listar todas las reservas
 const list = async () => {
     const [reservas] = await db.execute(`
-        SELECT r.*, c.Nombre, c.Apellido, c.Email
+        SELECT r.*, c.Nombre, c.Apellido, c.Email, e.NombreEstadoReserva AS EstadoReservaNombre
         FROM reserva r
         LEFT JOIN cliente c ON r.NroDocumentoCliente = c.NroDocumento
+        LEFT JOIN estadosreserva e ON r.IdEstadoReserva = e.IdEstadoReserva
         ORDER BY r.FechaReserva DESC
     `);
     return reservas;
@@ -18,9 +19,10 @@ const list = async () => {
 // Obtener reserva por ID
 const getById = async (id) => {
     const [rows] = await db.execute(`
-        SELECT r.*, c.Nombre, c.Apellido, c.Email, c.Telefono
+        SELECT r.*, c.Nombre, c.Apellido, c.Email, c.Telefono, e.NombreEstadoReserva AS EstadoReservaNombre
         FROM reserva r
         LEFT JOIN cliente c ON r.NroDocumentoCliente = c.NroDocumento
+        LEFT JOIN estadosreserva e ON r.IdEstadoReserva = e.IdEstadoReserva
         WHERE r.IdReserva = ?
     `, [id]);
     return rows[0];
@@ -88,13 +90,23 @@ const deleteReserva = async (id) => {
 // Obtener reservas por cliente
 const getByCliente = async (nroDocumento) => {
     const [reservas] = await db.execute(`
-        SELECT r.*, c.Nombre, c.Apellido
+        SELECT r.*, c.Nombre, c.Apellido, e.NombreEstadoReserva AS EstadoReservaNombre
         FROM reserva r
         LEFT JOIN cliente c ON r.NroDocumentoCliente = c.NroDocumento
+        LEFT JOIN estadosreserva e ON r.IdEstadoReserva = e.IdEstadoReserva
         WHERE r.NroDocumentoCliente = ?
         ORDER BY r.FechaReserva DESC
     `, [nroDocumento]);
     return reservas;
+};
+
+const getEstadosReserva = async () => {
+    const [estados] = await db.execute(`
+        SELECT IdEstadoReserva, NombreEstadoReserva
+        FROM estadosreserva
+        ORDER BY IdEstadoReserva
+    `);
+    return estados;
 };
 
 module.exports = {
@@ -103,5 +115,6 @@ module.exports = {
     create,
     update: updateReserva,
     delete: deleteReserva,
-    getByCliente
+    getByCliente,
+    getEstadosReserva
 };

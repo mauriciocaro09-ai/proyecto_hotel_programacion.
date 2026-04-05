@@ -71,6 +71,12 @@ const connection = mysql.createConnection({
 npm run dev
 ```
 
+### Modo desarrollo con verificación previa de salud:
+
+```bash
+npm run dev:health
+```
+
 ### Modo producción:
 
 ```bash
@@ -145,7 +151,20 @@ curl http://localhost:3000/api/clientes
 |--------|-------------|
 | `npm start` | Inicia el servidor en modo producción |
 | `npm run dev` | Inicia el servidor en modo desarrollo con nodemon |
+| `npm run health` | Ejecuta validaciones de backend, DB e integración con frontend |
+| `npm run dev:health` | Corre health check y luego inicia el backend en modo desarrollo |
+| `npm run stop:port` | Libera el puerto 3000 cerrando procesos en escucha |
+| `npm run start:clean` | Libera puerto 3000 y arranca backend en modo producción |
+| `npm run dev:clean` | Libera puerto 3000 y arranca backend en modo desarrollo |
+| `npm run dev:health:clean` | Libera puerto 3000, valida health y arranca en desarrollo |
 | `npm test` | Ejecuta las pruebas (no configuradas) |
+
+## ✅ Flujo recomendado local
+
+1. Levantar backend con `npm run dev:health:clean`.
+2. Confirmar que `Overall status: HEALTHY` aparezca en la salida.
+3. Abrir frontend y validar que consuma `http://localhost:3000/api`.
+4. Si algo falla, ejecutar `npm run health` para diagnostico rapido.
 
 ## 🌐 Conectar con Frontend
 

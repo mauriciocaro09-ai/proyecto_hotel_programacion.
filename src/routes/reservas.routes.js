@@ -12,6 +12,12 @@ const reservasController = require('../controllers/reservas.controller');
 // GET /api/reservas - Listar todas las reservas
 router.get('/', reservasController.list);
 
+// GET /api/reservas/cliente/:nroDocumento - Obtener reservas por cliente
+router.get('/cliente/:nroDocumento', reservasController.getByCliente);
+
+// GET /api/reservas/estados - Obtener estados de reserva
+router.get('/estados', reservasController.getEstadosReserva);
+
 // GET /api/reservas/:id - Obtener una reserva por ID
 router.get('/:id', reservasController.getById);
 

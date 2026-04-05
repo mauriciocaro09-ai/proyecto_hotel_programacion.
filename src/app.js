@@ -129,6 +129,15 @@ app.get('/', (req, res) => {
     });
 });
 
+// Health check básico para monitoreo y smoke tests
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        service: 'hospedaje_digital_backend',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Ruta temporal para ver estructura de tablas
 const db = require('./database/connection');
 app.get('/api/debug/estructura', async (req, res) => {
