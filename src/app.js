@@ -116,7 +116,7 @@ app.use('/api/servicios', serviciosRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/reservas', reservasRoutes);
 
-// Ruta de prueba
+// Ruta principal del backend API
 app.get('/', (req, res) => {
     res.json({
         message: 'API de HOSPEDAJE_DIGITAL funcionando',
